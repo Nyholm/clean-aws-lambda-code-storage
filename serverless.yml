@@ -30,7 +30,7 @@ functions:
             - ${bref:layer.php-80}
         events:
             - schedule:
-                  rate: rate(2 minutes) # rate(7 days)
+                  rate: rate(7 days)
                   input:
                       save: 5 # Save 5 versions
                       regions: eu-west-1 eu-central-1 us-east-1
