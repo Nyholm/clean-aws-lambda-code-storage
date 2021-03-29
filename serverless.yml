@@ -1,4 +1,8 @@
+frameworkVersion: ">=2.30.0 <3.0.0"
 service: clean-aws-code-storage
+
+plugins:
+    - ./vendor/bref/bref
 
 provider:
     name: aws
@@ -6,8 +10,16 @@ provider:
     runtime: provided.al2
     lambdaHashingVersion: 20201221
 
-plugins:
-    - ./vendor/bref/bref
+    iam:
+        role:
+            statements:
+              - Effect: Allow
+                Action:
+                    - lambda:ListFunctions
+                    - lambda:ListVersionsByFunction
+                    - lambda:DeleteFunction
+                Resource:
+                    - "*"
 
 functions:
     app:

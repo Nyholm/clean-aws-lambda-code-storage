@@ -2,31 +2,57 @@
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$handler = function ($event) {
-    // Save 5 layer versions
-    $save = $event['save'] ?? 5;
-    die(json_encode($event));
-    $lambda = new \AsyncAws\Lambda\LambdaClient();
-    /** @var  $function */
-    foreach ($lambda->listFunctions()->getFunctions() as $function) {
-        $versions = $lambda->listVersionsByFunction(['FunctionName' => $function->getFunctionArn()]);
-        $arns = [];
+use Bref\Event\Handler;
+use Bref\Context\Context;
+use AsyncAws\Lambda\LambdaClient;
 
-        // Collect versions
-        foreach ($versions->getVersions() as $version) {
-            // Dont get the latest version
-            if ($version->getVersion() !== '$LATEST') {
-                $arns[$version->getFunctionArn()] = $version->getVersion();
-            }
+class Application implements Handler
+{
+    public function handle($event, Context $context)
+    {
+        // Save 5 layer versions
+        $save = $event['save'] ?? 5;
+
+        // Get regions or default to "current"
+        $regions = explode(' ', $event['regions'] ?? '');
+        if (empty($regions)) {
+            $regions[] = '';
         }
 
-        asort($arns);
-        $arns = array_slice(array_keys($arns), 0, -1 * $save);
+        foreach ($regions as $region) {
+            if ($region === '') {
+                $lambda = new LambdaClient();
+            } else {
+                $lambda = new LambdaClient(['region'=>$region]);
+            }
 
-        foreach ($arns as $arn) {
-            $lambda->deleteFunction(['FunctionName' => $arn]);
+            $this->removeOldVersions($lambda, $save);
         }
     }
-};
 
-return $handler;
+    private function removeOldVersions(LambdaClient $lambda, int $save)
+    {
+        foreach ($lambda->listFunctions()->getFunctions() as $function) {
+            $versions = $lambda->listVersionsByFunction(['FunctionName' => $function->getFunctionArn()]);
+            $arns = [];
+
+            // Collect versions
+            foreach ($versions->getVersions() as $version) {
+                // Dont get the latest version
+                if ($version->getVersion() !== '$LATEST') {
+                    $arns[$version->getFunctionArn()] = $version->getVersion();
+                }
+            }
+
+            asort($arns);
+            $arns = array_slice(array_keys($arns), 0, -1 * $save);
+
+            foreach ($arns as $arn) {
+                echo sprintf('Removing function version: '.$arn).PHP_EOL;
+                $lambda->deleteFunction(['FunctionName' => $arn]);
+            }
+        }
+    }
+}
+
+return new Application();
