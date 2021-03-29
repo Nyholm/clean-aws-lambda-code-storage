@@ -12,6 +12,6 @@
     "minimum-stability": "stable",
     "require": {
         "bref/bref": "^1.2",
-        "async-aws/lambda": "^1.3"
+        "async-aws/lambda": "^1.4"
     }
 }
