@@ -1,0 +1,24 @@
+service: clean-aws-code-storage
+
+provider:
+    name: aws
+    region: eu-central-1
+    runtime: provided.al2
+    lambdaHashingVersion: 20201221
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    app:
+        handler: src/index.php
+        timeout: 900
+        description: "See https://github.com/Nyholm/clean-aws-lambda-code-storage"
+        layers:
+            - ${bref:layer.php-80}
+        events:
+            - schedule:
+                  rate: rate(2 minutes) # rate(7 days)
+                  input:
+                      save: 5 # Save 5 versions
+                      regions: eu-west-1 eu-central-1 us-east-1

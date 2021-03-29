@@ -1,0 +1,17 @@
+{
+    "name": "nyholm/clean-aws-lambda-code-storage",
+    "description": "Clean AWS code storage",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nyholm",
+            "email": "tobias.nyholm@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "bref/bref": "^1.2",
+        "async-aws/lambda": "^1.3"
+    }
+}
