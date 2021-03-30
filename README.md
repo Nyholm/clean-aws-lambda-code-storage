@@ -21,6 +21,12 @@ composer update
 serverless deploy
 ```
 
+### Test it locally
+
+```
+AWS_PROFILE=acme ./vendor/bin/bref local app
+```
+
 ## Additional notes
 
 This repository fills the same purpose as [epsagon/clear-lambda-storage](https://github.com/epsagon/clear-lambda-storage),
