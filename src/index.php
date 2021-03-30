@@ -48,8 +48,12 @@ class Application implements Handler
             $arns = array_slice(array_keys($arns), 0, -1 * $save);
 
             foreach ($arns as $arn) {
-                echo sprintf('Removing function version: '.$arn).PHP_EOL;
-                $lambda->deleteFunction(['FunctionName' => $arn]);
+                try {
+                    echo sprintf('Removing function version: '.$arn).PHP_EOL;
+                    $lambda->deleteFunction(['FunctionName' => $arn]);
+                } catch (\Throwable $e) {
+                    echo ' - Failed: '.$e->getMessage();
+                }
             }
         }
     }
