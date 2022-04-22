@@ -16,9 +16,10 @@ It is meant to be deployed once and then you forget about it.
 ```
 git clone https://github.com/Nyholm/clean-aws-lambda-code-storage.git
 cd clean-aws-lambda-code-storage
+yarn install
 composer update
 # Modify regions in serverless.yml
-serverless deploy
+./node_modules/.bin/serverless deploy
 ```
 
 ### Test it locally

@@ -36,3 +36,8 @@ functions:
                       # By default, we are only checking the current region. You
                       # may also specify regions by uncomment the line below.
                       #regions: eu-west-1 eu-central-1 us-east-1
+
+
+package:
+    patterns:
+        - '!node_modules/**'
