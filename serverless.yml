@@ -27,7 +27,7 @@ functions:
         timeout: 900
         description: "See https://github.com/Nyholm/clean-aws-lambda-code-storage"
         layers:
-            - ${bref:layer.php-80}
+            - ${bref:layer.php-81}
         events:
             - schedule:
                   rate: rate(7 days)
